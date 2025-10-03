@@ -3,11 +3,11 @@ import os
 
 class DocumentStore:
     def __init__(self, path):
-        self.path = path
+        self.path = path + '.json'
         self.docs = {}
 
-        if os.path.exists(path):
-            with open(path, "r", encoding="utf-8") as f:
+        if os.path.exists(self.path):
+            with open(self.path, "r", encoding="utf-8") as f:
                 self.docs = json.load(f)
 
     def set(self, ids, documents):

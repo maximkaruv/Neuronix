@@ -7,10 +7,10 @@ client = OpenAI(
     base_url=OPENAI_BASE_URL
 )
     
-def generator(self, text):
+def generator(text):
     start_time = time.perf_counter()
     try:
-        res = self.client.embeddings.create(
+        res = client.embeddings.create(
             model="gpt-5-nano",
             messages=[{"role": "user", "content": text}]
         )

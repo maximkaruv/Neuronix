@@ -1,11 +1,6 @@
-from pydantic import BaseModel
 from .stores.vectorstore import VectorStore
 from .stores.docstore import DocumentStore
-
-class Document(BaseModel):
-    title: str
-    content: str
-    source: str
+from schemas.models import Document
 
 class Storage:
     def __init__(self, vector_store_path: str, dim: int, doc_store_path: str, embedder):
@@ -44,7 +39,7 @@ class Storage:
         ids = list(map(int, self.doc_store.get_all_ids()))
         return [(i, Document(**self.doc_store.docs[str(i)])) for i in ids]
 
-    def search(self, query: str, k: int):
+    def search(self, query: str, k: int) -> list[Document]:
         vector = self.embedder(query)  # передаем только текст content
         ids_list = self.vector_store.search(vector, k)[0]  # FAISS возвращает список списков
 
@@ -53,7 +48,8 @@ class Storage:
         for doc_id in ids_list:
             if doc_id in all_ids:
                 doc_data = self.doc_store.docs[str(doc_id)]
-                results.append((doc_id, Document(**doc_data)))
+                # results.append((doc_id, Document(**doc_data)))
+                results.append(Document(**doc_data))
         return results
 
     def reset(self):
