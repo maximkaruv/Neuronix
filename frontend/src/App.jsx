@@ -56,7 +56,7 @@ function ChatBot() {
 				{messages.map((msg, idx) => (
 					<div
 						key={idx}
-						style={{ textAlign: msg.type === 'user' ? 'left' : 'right' }}
+						style={{ textAlign: msg.type === 'user' ? 'right' : 'left' }}
 					>
 						<p>{msg.content}</p>
 						{msg.sources &&

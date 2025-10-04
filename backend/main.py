@@ -4,14 +4,23 @@ sys.pycache_prefix = os.path.join(os.getcwd(), "__pycache__")
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from modules.storage import Storage
-from pathlib import Path
 from modules.embedder import embedder
 from modules.generator import generator
 from schemas.models import Document, Prompt, Search
 from config import BLOCK, MESSAGE
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # фронтенд
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 storage = Storage('data/vectors', 1536, 'data/metadata', embedder)
 storage.vector_store.save()
@@ -71,7 +80,8 @@ def smart_search(query: Prompt):
         prompt = MESSAGE.format(query=query.prompt, blocks='\n---\n'.join(blocks))
         print(prompt)
         answer = generator(prompt)
-        return JSONResponse(content={"answer": answer}, status_code=200)
+        print(answer)
+        return JSONResponse(content={"content": answer, "sources": []}, status_code=200)
     except Exception as e:
         print(e)
         raise HTTPException(status_code=500, detail="Ошибка при умном нейро-поиске")
