@@ -17,11 +17,19 @@ class DocumentStore:
         for i, doc in zip(ids, documents):
             self.docs[str(i)] = doc
 
-    def delete(self, ids):
+    def delete(self, ids) -> dict:
         if isinstance(ids, (int, str)):
             ids = [ids]
+
+        results = {}
         for i in ids:
-            self.docs.pop(str(i), None)
+            key = str(i)
+            if key in self.docs:
+                self.docs.pop(key)
+                results[i] = "deleted"
+            else:
+                results[i] = "already_deleted"
+        return results
 
     def get_all_ids(self):
         return [int(x) for x in list(self.docs.keys())]

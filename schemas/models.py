@@ -1,4 +1,3 @@
-from numpy import bmat
 from pydantic import BaseModel
 
 class Document(BaseModel):
@@ -6,8 +5,9 @@ class Document(BaseModel):
     content: str
     source: str
 
-class QueryID(BaseModel):
-    id: int
-
 class Prompt(BaseModel):
     prompt: str
+
+class Search(BaseModel):
+    query: str
+    count: int

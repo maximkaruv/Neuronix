@@ -29,17 +29,18 @@ class Storage:
         self.doc_store.save()
         self.vector_store.save()
 
-    def delete(self, ids: list[int]):
-        self.doc_store.delete(ids)
+    def delete(self, ids: list[int]) -> dict:
+        results = self.doc_store.delete(ids)
         self.vector_store.delete(ids)
         self.doc_store.save()
         self.vector_store.save()
+        return results
 
     def get_all_documents(self) -> list[tuple[int, Document]]:
         ids = list(map(int, self.doc_store.get_all_ids()))
         return [(i, Document(**self.doc_store.docs[str(i)])) for i in ids]
 
-    def search(self, query: str, k: int) -> list[Document]:
+    def search(self, query: str, k: int) -> list[tuple[int, Document]]:
         vector = self.embedder(query)  # передаем только текст content
         ids_list = self.vector_store.search(vector, k)[0]  # FAISS возвращает список списков
 
@@ -48,8 +49,7 @@ class Storage:
         for doc_id in ids_list:
             if doc_id in all_ids:
                 doc_data = self.doc_store.docs[str(doc_id)]
-                # results.append((doc_id, Document(**doc_data)))
-                results.append(Document(**doc_data))
+                results.append((doc_id, Document(**doc_data)))
         return results
 
     def reset(self):

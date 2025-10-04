@@ -10,7 +10,7 @@ client = OpenAI(
 def generator(text):
     start_time = time.perf_counter()
     try:
-        res = client.embeddings.create(
+        res = client.chat.completions.create(
             model="gpt-5-nano",
             messages=[{"role": "user", "content": text}]
         )
